@@ -42,6 +42,25 @@ class Chip8:
         for i, byte_value in enumerate(data):
             self.memory[0x200 + i] = byte_value
 
+    def cycle(self) -> None:
+        # fetch opcode
+        opcode = self.memory[self.PC << 8] | self.memory[self.PC+1]
+        self.PC += 2
+
+        # decode and execute
+        self.execute_opcode(opcode)
+
+        # update timers
+        if self.delay_timer > 0:
+            self.delay_timer -= 1
+        
+        if self.sound_timer > 0:
+            self.sound_timer -= 1
+
+    def execute_opcode(self, opcode: int) -> None:
+        pass
+
+
 if __name__ == "__main__":
     chip8 = Chip8()
     chip8.load_rom("roms/IBMLogo.ch8")
