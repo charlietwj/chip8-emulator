@@ -35,16 +35,13 @@ class Chip8:
         for i in range(len(font)):
             self.memory[i+0x50] = font[i]
 
-        
+    def load_rom(self, name: str) -> None:
+        with open(name, "rb") as file:
+            data = file.read()
 
-def read_chip8(name: str) -> None:
-    lines = []
-    with open(name, "rb") as file:
-        lines.append(file.readline())
-
-    for line in lines:
-        print(line)
-        break
+        for i, byte_value in enumerate(data):
+            self.memory[0x200 + i] = byte_value
 
 if __name__ == "__main__":
-    read_chip8("roms/IBMLogo.ch8")
+    chip8 = Chip8()
+    chip8.load_rom("roms/IBMLogo.ch8")
