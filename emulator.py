@@ -10,7 +10,8 @@ class Chip8:
         self.stack = []
         self.delay_timer = 0
         self.sound_timer = 0
-        self.registers = [0] * 16
+        self.V = [0] * 16
+        self.keypad = [False] * 16
 
 def read_chip8(name: str) -> None:
     lines = []
