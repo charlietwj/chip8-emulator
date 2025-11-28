@@ -23,4 +23,4 @@ def read_chip8(name: str) -> None:
         break
 
 if __name__ == "__main__":
-    read_chip8("IBMLogo.ch8")
+    read_chip8("roms/IBMLogo.ch8")
