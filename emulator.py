@@ -58,8 +58,27 @@ class Chip8:
             self.sound_timer -= 1
 
     def execute_opcode(self, opcode: int) -> None:
-        pass
+        instruction = (opcode & 0xF000) >> 12
+        x = (opcode & 0x0F00) >> 8
+        y = (opcode & 0x00F0) >> 4
+        n = opcode & 0x000F
+        nn = opcode & 0x00FF
+        nnn = opcode & 0x0FFF
 
+        if instruction == 0x0:
+            if nn == 0xE0:
+                for i in range(32):
+                    for j in range(64):
+                        self.display[i][j] = False
+        elif instruction == 0x1:
+            self.PC = nnn
+        elif instruction == 0x6:
+            self.V[x] = nn
+        elif instruction == 0x7:
+            self.V[x] += nn
+        elif instruction == 0xA:
+            self.I = nnn
+        
 
 if __name__ == "__main__":
     chip8 = Chip8()
