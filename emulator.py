@@ -78,6 +78,24 @@ class Chip8:
             self.V[x] += nn
         elif instruction == 0xA:
             self.I = nnn
+        elif instruction == 0xD:
+            x_coord = self.V[x] & 0x3F
+            y_coord = self.V[y] & 0x1F
+            self.V[0xF] = 0
+
+            for j in range(n):
+                if y_coord + j >= 0x20:
+                    break
+
+                current_byte = self.memory[self.I + j]
+                
+                for i in range(8):
+                    if x_coord + i >= 0x40:
+                        break
+
+                    current_bit = current_byte & (1 << i)
+                    self.display[x_coord + i][y_coord + j] ^= current_bit
+
         
 
 if __name__ == "__main__":
