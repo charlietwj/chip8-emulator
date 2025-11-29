@@ -101,7 +101,16 @@ class Chip8:
         pass
 
     def draw_graphics(self, screen: pygame.Surface) -> None:
-        pass
+        off_color = (0, 0, 0)
+        on_color = (255, 255, 255)
+
+        screen.fill(off_color)
+        for i in range(64):
+            for j in range(32):
+                if not self.display[i][j]:
+                    continue
+
+                pygame.draw.rect(screen, on_color, (i, j, self.size, self.size))
 
 def game_loop():
     size = 10
