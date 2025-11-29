@@ -122,7 +122,6 @@ class Chip8:
                     self.V[0xF] = 0
                 
                 self.V[x] += self.V[y]
-                self.V[x] = self.V[x] & 0xFF
             elif n == 0x5:
                 if self.V[x] >= self.V[y]:
                     self.V[0xF] = 1
@@ -130,10 +129,9 @@ class Chip8:
                     self.V[0xF] = 0
 
                 self.V[x] -= self.V[y]
-                self.V[x] = self.V[x] & 0xFF
             elif n == 0x6:
                 self.V[x] = self.V[y]
-                self.V[0xF] = self.V[x] & 1
+                self.V[0xF] = self.V[x] & 0x1
                 self.V[x] >>= 1
             elif n == 0x7:
                 if self.V[x] <= self.Y[y]:
@@ -146,6 +144,8 @@ class Chip8:
                 self.V[x] = self.V[y]
                 self.V[0xF] = self.V[x] & (1 << 7)
                 self.V[x] <<= 1
+
+            self.V[x] &= 0xFF
         elif instruction == 0x9:
             if self.V[x] != self.V[y]:
                 self.PC += 2
@@ -253,7 +253,7 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/SpaceInvaders.ch8")
+    chip8.load_rom("roms/Brick.ch8")
 
     pygame.init()
     pygame.time.set_timer(pygame.USEREVENT + 1, 16)
