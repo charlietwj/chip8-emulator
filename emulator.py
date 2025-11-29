@@ -273,7 +273,7 @@ def game_loop():
         chip8.draw_graphics(screen)
 
         pygame.display.flip()
-        clock.tick(500)
+        clock.tick(1000)
 
     pygame.quit()
 
