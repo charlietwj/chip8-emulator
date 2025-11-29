@@ -2,7 +2,8 @@ import pygame
 
 class Chip8:
     
-    def __init__(self):
+    def __init__(self, size: int):
+        self.size = size
         self.memory = [0] * 4096
         self.display = [[False] * 64 for _ in range(32)]
         self.PC = 0x200
@@ -88,7 +89,7 @@ class Chip8:
                     break
 
                 current_byte = self.memory[self.I + j]
-                
+
                 for i in range(8):
                     if x_coord + i >= 0x40:
                         break
@@ -96,8 +97,38 @@ class Chip8:
                     current_bit = current_byte & (1 << i)
                     self.display[x_coord + i][y_coord + j] ^= current_bit
 
-        
+    def handle_input(self, event: pygame.event.Event) -> None:
+        pass
+
+    def draw_graphics(self, screen: pygame.Surface) -> None:
+        pass
+
+def game_loop():
+    size = 10
+    width = 64
+    height = 32
+
+    chip8 = Chip8(size)
+    chip8.load_rom("roms/IBMLogo.ch8")
+
+    pygame.init()
+    screen = pygame.display.set_mode((width * size, height * size))
+    clock = pygame.time.Clock()
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            chip8.handle_input(event)
+
+        chip8.cycle()
+        chip8.draw_graphics(screen)
+
+        pygame.display.flip()
+        clock.tick(500)
+
+    pygame.quit()
 
 if __name__ == "__main__":
-    chip8 = Chip8()
-    chip8.load_rom("roms/IBMLogo.ch8")
+    game_loop()
