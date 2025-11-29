@@ -1,4 +1,5 @@
 import pygame
+import random
 
 class Chip8:
     
@@ -135,6 +136,10 @@ class Chip8:
                 self.PC += 2
         elif instruction == 0xA:
             self.I = nnn
+        elif instruction == 0xB:
+            self.PC = nnn + self.V[0]
+        elif instruction == 0xC:
+            self.V[x] = random.randint(0x0, 0xFF) & nn
         elif instruction == 0xD:
             x_coord = self.V[x] & 0x3F
             y_coord = self.V[y] & 0x1F
@@ -152,6 +157,15 @@ class Chip8:
 
                     current_bit = current_byte & (1 << (7-i))
                     self.display[x_coord + i][y_coord + j] ^= current_bit
+        elif instruction == 0xE:
+            if nn == 0x9E:
+                if self.keypad[self.V[x]]:
+                    self.PC += 2
+            elif nn == 0xA1:
+                if not self.keypad[self.V[x]]:
+                    self.PC += 2
+        elif instruction == 0xF:
+            pass
 
     def handle_input(self, event: pygame.event.Event) -> None:
         pass
