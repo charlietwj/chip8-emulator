@@ -71,13 +71,6 @@ class Chip8:
         # decode and execute
         self.execute_opcode(opcode)
 
-        # update timers
-        if self.delay_timer > 0:
-            self.delay_timer -= 1
-        
-        if self.sound_timer > 0:
-            self.sound_timer -= 1
-
     def execute_opcode(self, opcode: int) -> None:
         instruction = (opcode & 0xF000) >> 12
         x = (opcode & 0x0F00) >> 8
@@ -201,6 +194,7 @@ class Chip8:
                 for i in range(0x10):
                     if self.keypad[i]:
                         key_pressed = i
+                        break
 
                 if key_pressed is None:
                     self.PC -= 2
@@ -223,16 +217,20 @@ class Chip8:
                 for i in range(x+1):
                     self.V[i] = self.memory[self.I + i]
 
-    def handle_input(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN:
-            print(event.unicode)
-            if event.unicode in self.keys:
-                key = self.keys[event.unicode]
-                self.keypad[key] = True
-        elif event.type == pygame.KEYUP:
-            if event.unicode in self.keys:
-                key = self.keys[event.unicode]
-                self.keypad[key] = False
+    def handle_event(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.USEREVENT + 1:
+            if self.delay_timer > 0:
+                self.delay_timer -= 1
+            
+            if self.sound_timer > 0:
+                self.sound_timer -= 1
+    
+    def handle_keys(self, key_pressed: tuple[bool]) -> None:
+        for key, value in self.keys.items():
+            if key_pressed[ord(key)]:
+                self.keypad[value] = True
+            else:
+                self.keypad[value] = False
 
     def draw_graphics(self, screen: pygame.Surface) -> None:
         off_color = (0, 0, 0)
@@ -255,9 +253,10 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/Pong.ch8")
+    chip8.load_rom("roms/SpaceInvaders.ch8")
 
     pygame.init()
+    pygame.time.set_timer(pygame.USEREVENT + 1, 16)
     screen = pygame.display.set_mode((width * size, height * size))
     clock = pygame.time.Clock()
     running = True
@@ -266,13 +265,15 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            chip8.handle_input(event)
+            chip8.handle_event(event)
 
+        keys = pygame.key.get_pressed()
+        chip8.handle_keys(keys)
         chip8.cycle()
         chip8.draw_graphics(screen)
 
         pygame.display.flip()
-        clock.tick(300)
+        clock.tick(500)
 
     pygame.quit()
 
