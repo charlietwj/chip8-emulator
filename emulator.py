@@ -116,7 +116,7 @@ class Chip8:
                 pygame.draw.rect(screen, on_color, rect)
 
 def game_loop():
-    size = 10
+    size = 12
     width = 64
     height = 32
 
