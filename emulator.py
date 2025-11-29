@@ -130,7 +130,6 @@ class Chip8:
 
                 self.V[x] -= self.V[y]
             elif n == 0x6:
-                self.V[x] = self.V[y]
                 self.V[0xF] = self.V[x] & 0x1
                 self.V[x] >>= 1
             elif n == 0x7:
@@ -141,7 +140,6 @@ class Chip8:
 
                 self.V[x] = self.V[y] - self.V[x]
             elif n == 0xE:
-                self.V[x] = self.V[y]
                 self.V[0xF] = self.V[x] & (1 << 7)
                 self.V[x] <<= 1
 
@@ -255,7 +253,7 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/Pong.ch8")
+    chip8.load_rom("roms/SpaceInvaders.ch8")
 
     pygame.init()
     pygame.time.set_timer(pygame.USEREVENT + 1, 16)
