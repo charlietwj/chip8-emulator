@@ -5,7 +5,7 @@ class Chip8:
     def __init__(self, size: int):
         self.size = size
         self.memory = [0] * 4096
-        self.display = [[False] * 64 for _ in range(32)]
+        self.display = [[False] * 32 for _ in range(64)]
         self.PC = 0x200
         self.I = 0
         self.stack = []
@@ -45,7 +45,7 @@ class Chip8:
 
     def cycle(self) -> None:
         # fetch opcode
-        opcode = self.memory[self.PC << 8] | self.memory[self.PC+1]
+        opcode = (self.memory[self.PC] << 8) | self.memory[self.PC+1]
         self.PC += 2
 
         # decode and execute
@@ -68,8 +68,8 @@ class Chip8:
 
         if instruction == 0x0:
             if nn == 0xE0:
-                for i in range(32):
-                    for j in range(64):
+                for i in range(64):
+                    for j in range(32):
                         self.display[i][j] = False
         elif instruction == 0x1:
             self.PC = nnn
@@ -94,7 +94,7 @@ class Chip8:
                     if x_coord + i >= 0x40:
                         break
 
-                    current_bit = current_byte & (1 << i)
+                    current_bit = current_byte & (1 << (7-i))
                     self.display[x_coord + i][y_coord + j] ^= current_bit
 
     def handle_input(self, event: pygame.event.Event) -> None:
@@ -109,8 +109,11 @@ class Chip8:
             for j in range(32):
                 if not self.display[i][j]:
                     continue
-
-                pygame.draw.rect(screen, on_color, (i, j, self.size, self.size))
+                
+                x_coord = i * self.size
+                y_coord = j * self.size
+                rect = pygame.Rect(x_coord, y_coord, self.size, self.size)
+                pygame.draw.rect(screen, on_color, rect)
 
 def game_loop():
     size = 10
