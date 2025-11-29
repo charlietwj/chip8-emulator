@@ -172,6 +172,8 @@ class Chip8:
                         break
 
                     current_bit = current_byte & (1 << (7-i))
+                    if self.display[x_coord + i][y_coord + j] and current_bit:
+                        self.V[0xF] = 1
                     self.display[x_coord + i][y_coord + j] ^= current_bit
         elif instruction == 0xE:
             if nn == 0x9E:
