@@ -35,22 +35,22 @@ class Chip8:
         ]
 
         self.keys = {
-            ord('1'): 0x1,
-            ord('2'): 0x2,
-            ord('3'): 0x3,
-            ord('4'): 0xC,
-            ord('q'): 0x4,
-            ord('w'): 0x5,
-            ord('e'): 0x6,
-            ord('r'): 0xD,
-            ord('a'): 0x7,
-            ord('s'): 0x8,
-            ord('d'): 0x9,
-            ord('f'): 0xE,
-            ord('z'): 0xA,
-            ord('x'): 0x0,
-            ord('c'): 0xB,
-            ord('v'): 0xF
+            '1': 0x1,
+            '2': 0x2,
+            '3': 0x3,
+            '4': 0xC,
+            'q': 0x4,
+            'w': 0x5,
+            'e': 0x6,
+            'r': 0xD,
+            'a': 0x7,
+            's': 0x8,
+            'd': 0x9,
+            'f': 0xE,
+            'z': 0xA,
+            'x': 0x0,
+            'c': 0xB,
+            'v': 0xF
         }
 
         for i in range(len(font)):
@@ -112,6 +112,7 @@ class Chip8:
             self.V[x] = nn
         elif instruction == 0x7:
             self.V[x] += nn
+            self.V[x] = self.V[x] & 0xFF
         elif instruction == 0x8:
             if n == 0x0:
                 self.V[x] = self.V[y]
@@ -128,6 +129,7 @@ class Chip8:
                     self.V[0xF] = 0
                 
                 self.V[x] += self.V[y]
+                self.V[x] = self.V[x] & 0xFF
             elif n == 0x5:
                 if self.V[x] >= self.V[y]:
                     self.V[0xF] = 1
@@ -135,6 +137,7 @@ class Chip8:
                     self.V[0xF] = 0
 
                 self.V[x] -= self.V[y]
+                self.V[x] = self.V[x] & 0xFF
             elif n == 0x6:
                 self.V[x] = self.V[y]
                 self.V[0xF] = self.V[x] & 1
@@ -157,6 +160,7 @@ class Chip8:
             self.I = nnn
         elif instruction == 0xB:
             self.PC = nnn + self.V[0]
+            self.PC = self.PC & 0xFFF
         elif instruction == 0xC:
             self.V[x] = random.randint(0x0, 0xFF) & nn
         elif instruction == 0xD:
@@ -221,6 +225,7 @@ class Chip8:
 
     def handle_input(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
+            print(event.unicode)
             if event.unicode in self.keys:
                 key = self.keys[event.unicode]
                 self.keypad[key] = True
@@ -250,7 +255,7 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/test_opcode.ch8")
+    chip8.load_rom("roms/Pong.ch8")
 
     pygame.init()
     screen = pygame.display.set_mode((width * size, height * size))
@@ -267,7 +272,7 @@ def game_loop():
         chip8.draw_graphics(screen)
 
         pygame.display.flip()
-        clock.tick(500)
+        clock.tick(300)
 
     pygame.quit()
 
