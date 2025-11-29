@@ -34,6 +34,25 @@ class Chip8:
             0xF0, 0x80, 0xF0, 0x80, 0x80  # F
         ]
 
+        self.keys = {
+            ord('1'): 0x1,
+            ord('2'): 0x2,
+            ord('3'): 0x3,
+            ord('4'): 0xC,
+            ord('q'): 0x4,
+            ord('w'): 0x5,
+            ord('e'): 0x6,
+            ord('r'): 0xD,
+            ord('a'): 0x7,
+            ord('s'): 0x8,
+            ord('d'): 0x9,
+            ord('f'): 0xE,
+            ord('z'): 0xA,
+            ord('x'): 0x0,
+            ord('c'): 0xB,
+            ord('v'): 0xF
+        }
+
         for i in range(len(font)):
             self.memory[i+0x50] = font[i]
 
