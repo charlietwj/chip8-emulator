@@ -220,7 +220,12 @@ class Chip8:
                     self.V[i] = self.memory[self.I + i]
 
     def handle_input(self, event: pygame.event.Event) -> None:
-        pass
+        if event.type == pygame.KEYDOWN:
+            key = self.keys[event.unicode]
+            self.keypad[key] = True
+        elif event.type == pygame.KEYUP:
+            key = self.keys[event.unicode]
+            self.keypad[key] = False
 
     def draw_graphics(self, screen: pygame.Surface) -> None:
         off_color = (0, 0, 0)
