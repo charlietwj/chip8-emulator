@@ -221,11 +221,13 @@ class Chip8:
 
     def handle_input(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
-            key = self.keys[event.unicode]
-            self.keypad[key] = True
+            if event.unicode in self.keys:
+                key = self.keys[event.unicode]
+                self.keypad[key] = True
         elif event.type == pygame.KEYUP:
-            key = self.keys[event.unicode]
-            self.keypad[key] = False
+            if event.unicode in self.keys:
+                key = self.keys[event.unicode]
+                self.keypad[key] = False
 
     def draw_graphics(self, screen: pygame.Surface) -> None:
         off_color = (0, 0, 0)
@@ -248,7 +250,7 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/IBMLogo.ch8")
+    chip8.load_rom("roms/test_opcode.ch8")
 
     pygame.init()
     screen = pygame.display.set_mode((width * size, height * size))
