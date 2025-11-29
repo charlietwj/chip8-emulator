@@ -165,7 +165,40 @@ class Chip8:
                 if not self.keypad[self.V[x]]:
                     self.PC += 2
         elif instruction == 0xF:
-            pass
+            if nn == 0x07:
+                self.V[x] = self.delay_timer
+            elif nn == 0x15:
+                self.delay_timer = self.V[x]
+            elif nn == 0x18:
+                self.sound_timer = self.V[x]
+            elif nn == 0x1E:
+                self.I += self.V[x]
+            elif nn == 0x0A:
+                key_pressed = None
+                for i in range(0x10):
+                    if self.keypad[i]:
+                        key_pressed = i
+
+                if key_pressed is None:
+                    self.PC -= 2
+                else:
+                    self.V[x] = key_pressed
+            elif nn == 0x29:
+                value = self.V[x] * 0x000F
+                self.I = 0x50 + value * 5
+            elif nn == 0x33:
+                position = self.I
+                number = self.V[x]
+                for value in [100, 10, 1]:
+                    self.memory[position] = number // value
+                    number %= value
+                    position += 1
+            elif nn == 0x55:
+                for i in range(x+1):
+                    self.memory[self.I + i] = self.V[i]
+            elif nn == 0x65:
+                for i in range(x+1):
+                    self.V[i] = self.memory[self.I + i]
 
     def handle_input(self, event: pygame.event.Event) -> None:
         pass
