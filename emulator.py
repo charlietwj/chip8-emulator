@@ -67,16 +67,34 @@ class Chip8:
         nnn = opcode & 0x0FFF
 
         if instruction == 0x0:
-            if nn == 0xE0:
+            if opcode == 0x00E0:
                 for i in range(64):
                     for j in range(32):
                         self.display[i][j] = False
+            elif opcode == 0x00EE:
+                address = self.stack.pop()
+                self.PC = address
         elif instruction == 0x1:
             self.PC = nnn
+        elif instruction == 0x2:
+            self.stack.append(self.PC)
+            self.PC = nnn
+        elif instruction == 0x3:
+            if self.V[x] == nn:
+                self.PC += 2
+        elif instruction == 0x4:
+            if self.V[x] != nn:
+                self.PC += 2
+        elif instruction == 0x5:
+            if self.V[x] == self.V[y]:
+                self.PC += 2
         elif instruction == 0x6:
             self.V[x] = nn
         elif instruction == 0x7:
             self.V[x] += nn
+        elif instruction == 0x9:
+            if self.V[x] != self.V[y]:
+                self.PC += 2
         elif instruction == 0xA:
             self.I = nnn
         elif instruction == 0xD:
