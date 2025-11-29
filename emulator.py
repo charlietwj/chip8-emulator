@@ -203,7 +203,7 @@ class Chip8:
                 else:
                     self.V[x] = key_pressed
             elif nn == 0x29:
-                value = self.V[x] * 0x000F
+                value = self.V[x] & 0x000F
                 self.I = 0x50 + value * 5
             elif nn == 0x33:
                 position = self.I
@@ -255,7 +255,7 @@ def game_loop():
     height = 32
 
     chip8 = Chip8(size)
-    chip8.load_rom("roms/Brick.ch8")
+    chip8.load_rom("roms/Pong.ch8")
 
     pygame.init()
     pygame.time.set_timer(pygame.USEREVENT + 1, 16)
